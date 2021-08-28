@@ -1,6 +1,6 @@
-# localstack with serverless and terraform demo
+# localstack with serverless demo
 
-This is somewhat of a contrived application that demonstrates how [localstack](https://localstack.cloud/) can be used in conjunction with [serverless](https://www.serverless.com/) and [terraform](https://www.terraform.io/) for local development of AWS components:
+This is somewhat of a contrived application that demonstrates how [localstack](https://localstack.cloud/) can be used in conjunction with [serverless](https://www.serverless.com/) and [cloudformation](https://aws.amazon.com/cloudformation/) for local development of AWS components:
 
 - [Lambda](https://aws.amazon.com/lambda/)
 - [S3](https://aws.amazon.com/s3/)
@@ -42,6 +42,10 @@ awslocal sqs send-message --message-body="{}" --queue-url "http://localhost:4566
 awslocal sqs receive-message --queue-url "http://localhost:4566/queue/test" --max-number-of-messages 10
 
 awslocal sqs delete-message --queue-url "http://localhost:4566/queue/test" --receipt-handle <handle>
+
+awslocal sqs send-message --message-body="test-dlq" --queue-url "http://localhost:4566/queue/imports"
+
+awslocal sqs receive-message --queue-url "http://localhost:4566/queue/imports-dlq" --max-number-of-messages 10
 ```
 
 ### S3
@@ -66,4 +70,12 @@ awslocal dynamodb put-item \
  --return-item-collection-metrics SIZE
 
 awslocal dynamodb scan --table-name images
+```
+
+## Testing
+
+```bash
+yarn purge
+
+yarn dev
 ```

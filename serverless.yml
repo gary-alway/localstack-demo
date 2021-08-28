@@ -1,0 +1,33 @@
+service: localstack-demo
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+  - serverless-offline-sqs
+  - serverless-localstack
+
+custom:
+  serverless-offline:
+    httpPort: 21001
+    lambdaPort: 3001
+  serverless-offline-sqs:
+    autoCreate: false
+    apiVersion: '2012-11-05'
+    endpoint: http://localhost:4566
+    region: us-east-1
+    accessKeyId: root
+    secretAccessKey: root
+    skipCacheInvalidation: false
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  timeout: 30
+  region: us-east-1
+
+functions:
+  Processor:
+    handler: src/lambdas/processor.handler
+    events:
+      - sqs: arn:aws:sqs:region:${self:provider.region}:imports
