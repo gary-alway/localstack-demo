@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": [
+      "es2015",
+      "es2016",
+      "es2017",
+      "dom",
+      "es6",
+      "dom.iterable",
+      "scripthost"
+    ],
+    "allowJs": true,
+    "sourceMap": true,
+    "outDir": "./build/",
+    "removeComments": true,
+    "downlevelIteration": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "preserveConstEnums": true,
+    "resolveJsonModule": true
+  },
+  "include": ["./src/**/*.ts", "./test/**/*.ts"],
+  "awesomeTypescriptLoaderOptions": {
+    "useCache": true
+  }
+}

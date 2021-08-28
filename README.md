@@ -49,6 +49,8 @@ awslocal sqs delete-message --queue-url "http://localhost:4566/queue/test" --rec
 ```bash
 awslocal s3api list-buckets
 
+awslocal s3 cp test/test-dynamo-record.json s3://images
+
 awslocal s3api list-objects --bucket images
 ```
 

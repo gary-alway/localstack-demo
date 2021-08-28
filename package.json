@@ -1,12 +1,29 @@
 {
   "name": "localstack-demo",
   "version": "1.0.0",
-  "main": "index.js",
   "repository": "https://github.com/garydouglasalway/localstack-demo.git",
   "author": "Gary Alway",
   "license": "MIT",
   "scripts": {
     "local:up": "make -C ./infra up",
-    "local:down": "make -C ./infra down"
+    "local:down": "make -C ./infra down",
+    "format": "prettier src --write",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --project tsconfig.json",
+    "lint": "eslint .",
+    "purge": "ts-node --files --project tsconfig.json test/purge.cmd"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.83",
+    "@types/node": "^16.7.4",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
+    "eslint": "^7.32.0",
+    "prettier": "^2.3.2",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.978.0"
   }
 }
