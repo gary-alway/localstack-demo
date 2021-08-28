@@ -1,0 +1,12 @@
+{
+  "name": "localstack-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/garydouglasalway/localstack-demo.git",
+  "author": "Gary Alway",
+  "license": "MIT",
+  "scripts": {
+    "local:up": "make -C ./infra up",
+    "local:down": "make -C ./infra down"
+  }
+}

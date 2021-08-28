@@ -1,0 +1,69 @@
+---
+Resources:
+  SNSTopicCreateImage:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: image-created
+  SNSTopicUpdateImage:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: image-updated
+  TestQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: test
+  SNSSubscriptionCreateImage:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref SNSTopicCreateImage
+      Endpoint:
+        Fn::GetAtt:
+          - TestQueue
+          - Arn
+      Protocol: sqs
+      RawMessageDelivery: true
+  SNSSubscriptionUpdateImage:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref SNSTopicUpdateImage
+      Endpoint:
+        Fn::GetAtt:
+          - TestQueue
+          - Arn
+      Protocol: sqs
+      RawMessageDelivery: true
+  ImportQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: imports
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::GetAtt:
+            - DeadLetterQueue
+            - Arn
+        # set to 1 for local DLQ testing
+        maxReceiveCount: 1
+  DeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: imports-dlq
+      ReceiveMessageWaitTimeSeconds: 20
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: images
+  DDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: images
+      SSESpecification:
+        SSEEnabled: true
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST

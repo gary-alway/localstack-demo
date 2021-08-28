@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    image: localstack/localstack
+    networks:
+      - localstack-network
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=${SERVICES-cloudformation,dynamodb,s3,sqs,sns}
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOSTNAME_EXTERNAL=localhost
+
+  wait-localstack:
+    image: waisbrot/wait
+    networks:
+      - localstack-network
+    depends_on:
+      - localstack
+    environment:
+      - TARGETS=localstack:4566
+      - TIMEOUT=120
+
+networks:
+  localstack-network:
+    name: "localstack-network"
