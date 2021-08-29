@@ -11,10 +11,11 @@ export interface InjectorContext {
 }
 
 const getSQSMessages = (event: SQSEvent): Message[] => {
-  return event?.Records?.reduce((acc, { body }) => {
-    const parsed = JSON.parse(body)
+  return event?.Records?.reduce((acc, { body, eventSourceARN }) => {
+    const type = eventSourceARN.substr(eventSourceARN.lastIndexOf(':') + 1)
+    const msg = { type, payload: JSON.parse(body) }
 
-    return parsed.Message ? [...acc, JSON.parse(parsed.Message)] : acc
+    return [...acc, msg]
   }, [] as Message[])
 }
 

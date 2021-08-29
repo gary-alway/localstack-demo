@@ -5,3 +5,4 @@ export const LOCAL_AWS_CONFIG = {
   secretAccessKey: 'root',
   endpoint: 'http://localhost:4566'
 }
+export const IMPORT_QUEUE = 'http://localhost:4566/000000000000/imports'

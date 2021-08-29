@@ -18,13 +18,15 @@
     "@middy/core": "1.5.2",
     "aws-sdk": "^2.978.0",
     "http-errors": "^1.8.0",
-    "ramda": "^0.27.1"
+    "ramda": "^0.27.1",
+    "string-hash": "^1.1.3"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.83",
     "@types/http-errors": "^1.8.1",
     "@types/node": "^16.7.4",
     "@types/ramda": "^0.27.44",
+    "@types/string-hash": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
     "eslint": "^7.32.0",
