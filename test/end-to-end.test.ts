@@ -95,8 +95,6 @@ describe('image importer', () => {
 
     await postImages()
 
-    const ddb_items = await testDynamoClient.scan(DDB_TABLE)
-    expect(ddb_items.Count).toBe(2)
     let count = 0
 
     await waitForExpect(
@@ -111,5 +109,8 @@ describe('image importer', () => {
       8000,
       200
     )
+
+    const ddb_items = await testDynamoClient.scan(DDB_TABLE)
+    expect(ddb_items.Count).toBe(2)
   })
 })
