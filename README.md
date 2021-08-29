@@ -87,4 +87,4 @@ yarn dev
 yarn test
 ```
 
-To use the query API `curl http://localhost:21001/images`
+To use the [query API](http://localhost:21001/images)
