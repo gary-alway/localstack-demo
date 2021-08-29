@@ -19,13 +19,17 @@ const MILLENIUM_BRIDGE_HASH = stringHash(MILLENIUM_BRIDGE)
 
 const images = ['', TOWER_BRIDGE, MILLENIUM_BRIDGE, '', undefined, '']
 
+const postImages = () =>
+  request.post('http://localhost:21001/images').send({ images })
+
 describe('image importer', () => {
   beforeAll(async () => {
     await purgeAll()
   })
 
   it('imports images into S3 and DynamoDB whilst broadcasting details via SNS', async () => {
-    await request.post('http://localhost:21001/images').send({ images })
+    await postImages()
+    const testQueue = await testSqsClient.findQueue('test')
 
     await waitForExpect(
       async () => {
@@ -51,7 +55,6 @@ describe('image importer', () => {
 
     await waitForExpect(
       async () => {
-        const testQueue = await testSqsClient.findQueue('test')
         const messages = await testSqsClient.receiveMessage(testQueue!, 2)
 
         const createdTowerBridge = messages.find(
@@ -85,6 +88,25 @@ describe('image importer', () => {
           TOWER_BRIDGE_HASH,
           MILLENIUM_BRIDGE_HASH
         ])
+      },
+      8000,
+      200
+    )
+
+    await postImages()
+
+    const ddb_items = await testDynamoClient.scan(DDB_TABLE)
+    expect(ddb_items.Count).toBe(2)
+    let count = 0
+
+    await waitForExpect(
+      async () => {
+        const messages = await testSqsClient.receiveMessage(testQueue!, 10)
+
+        count += messages.length
+        expect(messages.length).toBeGreaterThan(0)
+        messages.map(m => expect(JSON.parse(m.Body!).exists).toBe(true))
+        expect(count).toBe(2)
       },
       8000,
       200
