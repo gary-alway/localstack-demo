@@ -17,7 +17,7 @@ const MILLENIUM_BRIDGE =
 const TOWER_BRIDGE_HASH = stringHash(TOWER_BRIDGE)
 const MILLENIUM_BRIDGE_HASH = stringHash(MILLENIUM_BRIDGE)
 
-const images = ['', TOWER_BRIDGE, MILLENIUM_BRIDGE, '', undefined, '']
+const images = ['   ', TOWER_BRIDGE, MILLENIUM_BRIDGE, '', undefined, '']
 
 const postImages = () => request.post(API).send({ images })
 
