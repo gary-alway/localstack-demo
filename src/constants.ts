@@ -15,3 +15,4 @@ export const SNS_TOPIC_IMAGE_CREATED =
 export const SNS_TOPIC_IMAGE_UPDATED =
   'arn:aws:sns:us-east-1:000000000000:image-updated'
 export const S3_BUCKET = 'http://localhost:4566/images'
+export const API = 'http://localhost:21001/images'

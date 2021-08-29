@@ -6,7 +6,7 @@ import {
   testSqsClient
 } from './awsTestClients'
 import waitForExpect from 'wait-for-expect'
-import { DDB_TABLE } from '../src/constants'
+import { API, DDB_TABLE, S3_BUCKET } from '../src/constants'
 import stringHash from 'string-hash'
 
 const TOWER_BRIDGE =
@@ -19,8 +19,7 @@ const MILLENIUM_BRIDGE_HASH = stringHash(MILLENIUM_BRIDGE)
 
 const images = ['', TOWER_BRIDGE, MILLENIUM_BRIDGE, '', undefined, '']
 
-const postImages = () =>
-  request.post('http://localhost:21001/images').send({ images })
+const postImages = () => request.post(API).send({ images })
 
 describe('image importer', () => {
   beforeAll(async () => {
@@ -112,5 +111,22 @@ describe('image importer', () => {
 
     const ddb_items = await testDynamoClient.scan(DDB_TABLE)
     expect(ddb_items.Count).toBe(2)
+
+    const res = await request.get(API)
+    expect(res.body).toEqual({
+      status: 'ok',
+      data: [
+        {
+          originalUrl: TOWER_BRIDGE,
+          id: TOWER_BRIDGE_HASH,
+          url: `${S3_BUCKET}/${TOWER_BRIDGE_HASH}`
+        },
+        {
+          originalUrl: MILLENIUM_BRIDGE,
+          id: MILLENIUM_BRIDGE_HASH,
+          url: `${S3_BUCKET}/${MILLENIUM_BRIDGE_HASH}`
+        }
+      ]
+    })
   })
 })
