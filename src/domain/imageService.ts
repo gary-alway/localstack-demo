@@ -33,19 +33,19 @@ export const processImage = async (url: string) => {
 
   const hash = stringHash(url)
   const filename = `${hash}`
+  const record: ImageType = { id: hash, originalUrl: url }
 
   const s3Client = getS3Client()
   const exists = await s3Client.objectExists(filename)
-  await s3Client.putObject(filename, data, type)
 
-  const record: ImageType = { id: hash, originalUrl: url }
-
-  await getDynamoClient().putItem(record, DDB_TABLE)
-
-  await getSnsClient().publish(
-    exists ? SNS_TOPIC_IMAGE_UPDATED : SNS_TOPIC_IMAGE_CREATED,
-    JSON.stringify({ ...record, exists })
-  )
+  await Promise.all([
+    s3Client.putObject(filename, data, type),
+    getDynamoClient().putItem(record, DDB_TABLE),
+    getSnsClient().publish(
+      exists ? SNS_TOPIC_IMAGE_UPDATED : SNS_TOPIC_IMAGE_CREATED,
+      JSON.stringify({ ...record, exists })
+    )
+  ])
 }
 
 export const getImages = async (
