@@ -9,6 +9,7 @@ import {
 } from '../clients/getClients'
 import {
   DDB_TABLE,
+  S3_BUCKET,
   SNS_TOPIC_IMAGE_CREATED,
   SNS_TOPIC_IMAGE_UPDATED
 } from '../constants'
@@ -16,6 +17,7 @@ import {
 type ImageType = {
   id: number
   originalUrl: string
+  url?: string
 }
 
 export const processImage = async (url: string) => {
@@ -51,4 +53,10 @@ export const processImage = async (url: string) => {
 export const getImages = async (
   client: DynamoClient = getDynamoClient()
 ): Promise<ImageType[]> =>
-  client.scan(DDB_TABLE).then(res => pathOr<ImageType[]>([], ['Items'], res))
+  client.scan(DDB_TABLE).then(res =>
+    pathOr<ImageType[]>([], ['Items'], res).map(({ originalUrl, id }) => ({
+      originalUrl,
+      id,
+      url: `${S3_BUCKET}/${id}`
+    }))
+  )
