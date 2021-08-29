@@ -11,8 +11,12 @@ import {
   PutItemOutput
 } from 'aws-sdk/clients/dynamodb'
 import { AWSError } from 'aws-sdk'
+import { PromiseResult } from 'aws-sdk/lib/request'
 
 export interface DynamoClient {
+  scan: (
+    TableName: string
+  ) => Promise<PromiseResult<DocumentClient.ScanOutput, AWSError>>
   putItem: <T>(
     item: T,
     table: string,
@@ -32,6 +36,11 @@ export interface DynamoClient {
 }
 
 export const createDynamoClient = (client: DocumentClient): DynamoClient => {
+  const scan = async (
+    TableName: string
+  ): Promise<PromiseResult<DocumentClient.ScanOutput, AWSError>> =>
+    client.scan({ TableName }).promise()
+
   const updateItem = async (
     params: DocumentClient.UpdateItemInput
   ): Promise<DocumentClient.UpdateItemOutput> => client.update(params).promise()
@@ -109,6 +118,7 @@ export const createDynamoClient = (client: DocumentClient): DynamoClient => {
     deleteItem,
     getItem,
     query,
-    truncateTable
+    truncateTable,
+    scan
   }
 }

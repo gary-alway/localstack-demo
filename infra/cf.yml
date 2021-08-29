@@ -62,7 +62,7 @@ Resources:
         PointInTimeRecoveryEnabled: true
       AttributeDefinitions:
         - AttributeName: id
-          AttributeType: S
+          AttributeType: N
       KeySchema:
         - AttributeName: id
           KeyType: HASH

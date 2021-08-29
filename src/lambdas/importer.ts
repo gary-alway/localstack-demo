@@ -15,9 +15,9 @@ const handler = async ({ body }: APIGatewayEvent): Promise<APIResponse> => {
 
   const payload = JSON.parse(body)
 
-  const images = pathOr([], ['images'], payload)
+  const images = pathOr<[] | undefined>(undefined, ['images'], payload)
 
-  if (!Array.isArray(images)) {
+  if (!images || !Array.isArray(images)) {
     throw createHttpError(400)
   }
 

@@ -1,6 +1,7 @@
 import { SQSEvent, Context } from 'aws-lambda'
 import middy from '@middy/core'
 import { extractMessages, InjectorContext } from '../middleware/extractMessages'
+import { processImage } from '../domain/imageService'
 
 const messageHandler = async (
   _: SQSEvent,
@@ -13,7 +14,7 @@ const messageHandler = async (
     return
   }
 
-  console.log(messages)
+  await Promise.all(messages.map(({ payload: { img } }) => processImage(img)))
 }
 
 export const handler = middy(messageHandler as any).use(

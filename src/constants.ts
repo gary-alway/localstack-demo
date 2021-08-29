@@ -6,3 +6,8 @@ export const LOCAL_AWS_CONFIG = {
   endpoint: 'http://localhost:4566'
 }
 export const IMPORT_QUEUE = 'http://localhost:4566/000000000000/imports'
+export const DDB_TABLE = 'images'
+export const SNS_TOPIC_IMAGE_CREATED =
+  'arn:aws:sns:us-east-1:000000000000:image-created'
+export const SNS_TOPIC_IMAGE_UPDATED =
+  'arn:aws:sns:us-east-1:000000000000:image-updated'

@@ -5,7 +5,8 @@ const purge = async () =>
     testS3Client.rmdir(),
     testDynamoClient.truncateTable('images', 'id'),
     testSqsClient.purgeQueue('http://localhost:4566/queue/test'),
-    testSqsClient.purgeQueue('http://localhost:4566/queue/imports')
+    testSqsClient.purgeQueue('http://localhost:4566/queue/imports'),
+    testSqsClient.purgeQueue('http://localhost:4566/queue/imports-dlq')
   ])
 
 purge()

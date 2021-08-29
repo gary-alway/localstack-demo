@@ -58,6 +58,11 @@ awslocal s3 cp test/test-dynamo-record.json s3://images
 awslocal s3api list-objects --bucket images
 ```
 
+Bucket content is [available here](http://localhost:4566/images/), using the image hash as the slug to get a specific image, e.g.
+
+- [Tower bridge](http://localhost:4566/images/11386987)
+- [Millennium bridge](http://localhost:4566/images/4173522365)
+
 ### Dynamo DB
 
 ```bash
