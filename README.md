@@ -17,6 +17,7 @@ yarn local:up
 ![architecture](./design/architecture.svg)
 
 ```bash
+# tear down localstack docker container
 yarn local:down
 ```
 
@@ -28,7 +29,7 @@ yarn dev
 yarn test
 ```
 
-To use the [query API](http://localhost:21001/images)
+[query API](http://localhost:21001/images)
 
 ```bash
 # clear S3, SQS and Dynamo
