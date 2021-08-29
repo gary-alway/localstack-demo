@@ -12,7 +12,8 @@
     "build": "tsc --project tsconfig.json",
     "dev": "serverless offline start --noPrependStageInUrl",
     "lint": "eslint .",
-    "purge": "ts-node --files --project tsconfig.json test/purge.cmd"
+    "purge": "ts-node --files --project tsconfig.json test/purge.cmd",
+    "test": "ts-node --files --project tsconfig.json test/post.cmd"
   },
   "dependencies": {
     "@middy/core": "1.5.2",

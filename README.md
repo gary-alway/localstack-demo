@@ -83,4 +83,8 @@ awslocal dynamodb scan --table-name images
 yarn purge
 
 yarn dev
+
+yarn test
 ```
+
+To use the query API `curl http://localhost:21001/images`
