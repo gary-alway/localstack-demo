@@ -1,13 +1,25 @@
 import middy from '@middy/core'
-import { ALBEvent, ALBResult } from 'aws-lambda'
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  Context
+} from 'aws-lambda'
 import { pathOr } from 'ramda'
 
-const httpErrorHandler = (): middy.MiddlewareObject<ALBEvent, ALBResult> => {
+export const httpErrorHandler = (): middy.MiddlewareObject<
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  Context
+> => {
   return {
     onError: (handler: middy.HandlerLambda, next: middy.NextFunction) => {
       const { error } = handler
 
       const statusCode = pathOr(500, ['statusCode'], error)
+
+      if (statusCode === 500) {
+        console.error(`Server error: ${error}`)
+      }
 
       let errors = [{ message: 'Something went wrong' }]
       if (statusCode < 500) {
@@ -17,7 +29,10 @@ const httpErrorHandler = (): middy.MiddlewareObject<ALBEvent, ALBResult> => {
       Object.assign(handler, {
         response: {
           statusCode,
-          headers: { 'content-type': 'application/json' },
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true
+          },
           body: JSON.stringify({ status: 'error', errors })
         }
       })
@@ -26,5 +41,3 @@ const httpErrorHandler = (): middy.MiddlewareObject<ALBEvent, ALBResult> => {
     }
   }
 }
-
-export { httpErrorHandler }

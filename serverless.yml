@@ -27,7 +27,21 @@ provider:
   region: us-east-1
 
 functions:
-  Processor:
+  importer:
+    handler: src/lambdas/importer.endpoint
+    events:
+      - http:
+          path: /images
+          method: POST
+
+  query:
+    handler: src/lambdas/query.endpoint
+    events:
+      - http:
+          path: /images
+          method: GET
+
+  processor:
     handler: src/lambdas/processor.handler
     events:
       - sqs: arn:aws:sqs:region:${self:provider.region}:imports
