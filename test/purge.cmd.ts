@@ -1,15 +1,6 @@
-import { testDynamoClient, testS3Client, testSqsClient } from './awsTestClients'
+import { purgeAll } from './awsTestClients'
 
-const purge = async () =>
-  Promise.all([
-    testS3Client.rmdir(),
-    testDynamoClient.truncateTable('images', 'id'),
-    testSqsClient.purgeQueue('http://localhost:4566/queue/test'),
-    testSqsClient.purgeQueue('http://localhost:4566/queue/imports'),
-    testSqsClient.purgeQueue('http://localhost:4566/queue/imports-dlq')
-  ])
-
-purge()
+purgeAll()
   .then(() => process.exit(0))
   .catch(err => {
     console.log(err)

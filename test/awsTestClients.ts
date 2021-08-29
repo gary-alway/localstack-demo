@@ -4,7 +4,14 @@ import { createDynamoClient } from '../src/clients/dynamoClient'
 import { createS3Client } from '../src/clients/s3Client'
 import { createSNSClient } from '../src/clients/snsClient'
 import { createSQSClient } from '../src/clients/sqsClient'
-import { LOCAL_AWS_CONFIG } from '../src/constants'
+import {
+  DDB_TABLE,
+  DDB_TABLE_PK,
+  IMPORT_DL_QUEUE,
+  IMPORT_QUEUE,
+  LOCAL_AWS_CONFIG,
+  TEST_QUEUE
+} from '../src/constants'
 
 export const testDynamoClient = createDynamoClient(
   new DocumentClient(LOCAL_AWS_CONFIG)
@@ -14,3 +21,12 @@ export const testS3Client = createS3Client(
 )
 export const testSnsClient = createSNSClient(new SNS(LOCAL_AWS_CONFIG))
 export const testSqsClient = createSQSClient(new SQS(LOCAL_AWS_CONFIG))
+
+export const purgeAll = async () =>
+  Promise.all([
+    testS3Client.rmdir(),
+    testDynamoClient.truncateTable(DDB_TABLE, DDB_TABLE_PK),
+    testSqsClient.purgeQueue(IMPORT_QUEUE),
+    testSqsClient.purgeQueue(IMPORT_DL_QUEUE),
+    testSqsClient.purgeQueue(TEST_QUEUE)
+  ])

@@ -80,11 +80,14 @@ awslocal dynamodb scan --table-name images
 ## Testing
 
 ```bash
-yarn purge
-
 yarn dev
 
 yarn test
 ```
 
 To use the [query API](http://localhost:21001/images)
+
+```bash
+# clear S3, SQS and Dynamo
+yarn purge
+```
