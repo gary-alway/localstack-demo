@@ -21,14 +21,17 @@ const images = ['   ', TOWER_BRIDGE, MILLENIUM_BRIDGE, '', undefined, '']
 
 const postImages = () => request.post(API).send({ images })
 
+jest.setTimeout(30000)
+
 describe('image importer', () => {
   beforeAll(async () => {
     await purgeAll()
   })
 
-  it('imports images into S3 and DynamoDB whilst broadcasting details via SNS', async () => {
+  it('imports images into S3 and DynamoDB whilst broadcasting details via SNS and via SQS (via a dynamo stream)', async () => {
     await postImages()
     const testQueue = await testSqsClient.findQueue('test')
+    const streamQueue = await testSqsClient.findQueue('stream')
 
     await waitForExpect(
       async () => {
@@ -128,5 +131,25 @@ describe('image importer', () => {
         }
       ]
     })
+
+    await waitForExpect(
+      async () => {
+        const messages = await testSqsClient.receiveMessage(streamQueue!, 10)
+
+        expect(messages.length).toBeGreaterThanOrEqual(4)
+        console.log('DynamoDB stream records')
+        messages.map(({ Body }) => {
+          const {
+            record: {
+              eventName,
+              dynamodb: { Keys, NewImage, OldImage }
+            }
+          } = JSON.parse(Body!)
+          console.log({ eventName, Keys, NewImage, OldImage })
+        })
+      },
+      15000,
+      500
+    )
   })
 })

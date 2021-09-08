@@ -10,6 +10,7 @@ import {
   IMPORT_DL_QUEUE,
   IMPORT_QUEUE,
   LOCAL_AWS_CONFIG,
+  STREAM_OUTPUT_QUEUE,
   TEST_QUEUE
 } from '../src/constants'
 
@@ -26,6 +27,7 @@ export const purgeAll = async () =>
   Promise.all([
     testS3Client.rmdir(),
     testDynamoClient.truncateTable(DDB_TABLE, DDB_TABLE_PK),
+    testSqsClient.purgeQueue(STREAM_OUTPUT_QUEUE),
     testSqsClient.purgeQueue(IMPORT_QUEUE),
     testSqsClient.purgeQueue(IMPORT_DL_QUEUE),
     testSqsClient.purgeQueue(TEST_QUEUE)

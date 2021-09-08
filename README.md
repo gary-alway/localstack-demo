@@ -91,4 +91,6 @@ awslocal dynamodb put-item \
  --return-item-collection-metrics SIZE
 
 awslocal dynamodb scan --table-name images
+
+awslocal dynamodbstreams list-streams
 ```

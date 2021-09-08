@@ -12,6 +12,10 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: test
+  StreamOutputQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: stream-output
   SNSSubscriptionCreateImage:
     Type: AWS::SNS::Subscription
     Properties:
@@ -67,3 +71,5 @@ Resources:
         - AttributeName: id
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES

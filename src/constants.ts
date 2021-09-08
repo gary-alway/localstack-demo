@@ -5,6 +5,8 @@ export const LOCAL_AWS_CONFIG = {
   secretAccessKey: 'root',
   endpoint: 'http://localhost:4566'
 }
+export const STREAM_OUTPUT_QUEUE =
+  'http://localhost:4566/000000000000/stream-output'
 export const IMPORT_QUEUE = 'http://localhost:4566/000000000000/imports'
 export const IMPORT_DL_QUEUE = 'http://localhost:4566/000000000000/imports-dlq'
 export const TEST_QUEUE = 'http://localhost:4566/000000000000/test'
