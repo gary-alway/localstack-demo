@@ -33,9 +33,42 @@ export interface DynamoClient {
     hash: string,
     range?: string
   ) => Promise<void>
+  executeTransactWrite: (
+    params: DocumentClient.TransactWriteItemsInput
+  ) => Promise<DocumentClient.TransactWriteItemsOutput>
 }
 
 export const createDynamoClient = (client: DocumentClient): DynamoClient => {
+  // https://github.com/aws/aws-sdk-js/issues/2464#issuecomment-503524701
+  const executeTransactWrite = (
+    params: DocumentClient.TransactWriteItemsInput
+  ): Promise<DocumentClient.TransactWriteItemsOutput> => {
+    const transactionRequest = client.transactWrite(params)
+    let cancellationReasons: any[]
+    transactionRequest.on('extractError', response => {
+      try {
+        cancellationReasons = JSON.parse(
+          response.httpResponse.body.toString()
+        ).CancellationReasons
+      } catch (err) {
+        // just in case some types of errors can't be JSON parsed
+        console.error('Error extracting cancellation error', err)
+      }
+    })
+    return new Promise((resolve, reject) => {
+      transactionRequest.send((err, response) => {
+        if (err) {
+          console.error('Error performing transactWrite', {
+            cancellationReasons,
+            err
+          })
+          return reject(err)
+        }
+        return resolve(response)
+      })
+    })
+  }
+
   const scan = async (
     TableName: string
   ): Promise<PromiseResult<DocumentClient.ScanOutput, AWSError>> =>
@@ -119,6 +152,7 @@ export const createDynamoClient = (client: DocumentClient): DynamoClient => {
     getItem,
     query,
     truncateTable,
-    scan
+    scan,
+    executeTransactWrite
   }
 }
